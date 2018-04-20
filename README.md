@@ -14,14 +14,14 @@ The banks below were added in the order they are listed
 
 
 ## Nuget Install
-<pre><code>
+```
 Install-Package PodcastManager
-</code></pre>
+```
 
 ## Usage
-<pre><code>
+```csharp
 	    var podcastManager = new Manager();
             var nerdCast = podcastManager.GetManager(PodcastType.NerdCast);
             
             var podcastCollection = await nerdCast.GetPodcastListAsync();
-</code></pre>
+```

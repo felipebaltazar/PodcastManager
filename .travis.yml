@@ -1,6 +1,8 @@
 language: csharp
+mono: none
+dotnet: 2.0.0
 solution: PodcastManager.sln
-mono:
-  - latest
-  - 3.12.0
-  - 3.10.0
+script:
+  - cd PodcastManager
+  - dotnet restore
+  - dotnet build -c Release
