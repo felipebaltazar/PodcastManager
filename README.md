@@ -1,6 +1,8 @@
 # PodcastManager
 Tool to download and organize your Podcasts programmatically
 
+[![Build Status](https://travis-ci.org/felipebaltazar/PodcastManager.svg?branch=master)](https://travis-ci.org/felipebaltazar/PodcastManager)
+
 ## Current Supported Podcasts
 
 The banks below were added in the order they are listed
