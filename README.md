@@ -8,7 +8,7 @@ The banks below were added in the order they are listed
 
 | Name                                                                                                                                                                                          | EpisodeList | Additional Info                                                                                       | Method                               | Status |
 | ---                                                                                                                                                                                           | ---     | ---                                                                                                       | ---                                  | ---    |
-| [![Nerdcast](https://jovemnerd.com.br/wp-content/uploads/2016/07/logo-jn.png)]                              | Yes                 | Episode Number, Title, Published Date, Insertions         | Reversed Web API                  | OK     |
+| [![Nerdcast](https://github.com/felipebaltazar/PodcastManager/blob/master/PodcastManager/Logos/NerdCast.png)](https://github.com/felipebaltazar/PodcastManager/blob/master/PodcastManager/PodcastManagers/NerdCastManager.cs)                              | Yes                 | Episode Number, Title, Published Date, Insertions         | Reversed Web API                  | OK     |
 
 
 ## Nuget Install
@@ -18,7 +18,7 @@ Install-Package PodcastManager
 
 ## Usage
 <pre><code>
-			var podcastManager = new Manager();
+	    var podcastManager = new Manager();
             var nerdCast = podcastManager.GetManager(PodcastType.NerdCast);
             
             var podcastCollection = await nerdCast.GetPodcastListAsync();
