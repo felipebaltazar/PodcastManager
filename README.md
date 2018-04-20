@@ -8,7 +8,7 @@ The banks below were added in the order they are listed
 
 | Name                                                                                                                                                                                          | EpisodeList | Additional Info                                                                                       | Method                               | Status |
 | ---                                                                                                                                                                                           | ---     | ---                                                                                                       | ---                                  | ---    |
-| [![Nerdcast](https://github.com/felipebaltazar/PodcastManager/blob/master/PodcastManager/Logos/NerdCast.png)](https://github.com/felipebaltazar/PodcastManager/blob/master/PodcastManager/PodcastManagers/NerdCastManager.cs)                              | Yes                 | Episode Number, Title, Published Date, Insertions         | Reversed Web API                  | OK     |
+| [![Nerdcast](https://github.com/felipebaltazar/PodcastManager/blob/master/Logos/Nerdcast.png)](https://github.com/felipebaltazar/PodcastManager/blob/master/PodcastManager/PodcastManagers/NerdCastManager.cs)                              | Yes                 | Episode Number, Title, Published Date, Insertions         | Reversed Web API                  | OK     |
 
 
 ## Nuget Install
