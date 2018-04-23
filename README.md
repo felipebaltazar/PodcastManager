@@ -8,9 +8,10 @@ Tool to download and organize your Podcasts programmatically
 The banks below were added in the order they are listed
 
 
-| Name                                                                                                                                                                                          | EpisodeList | Additional Info                                                                                       | Method                               | Status |
+| Name                                                                                                                                                                                          | Episode List | Additional Info                                                                                       | Method                               | Status |
 | ---                                                                                                                                                                                           | ---     | ---                                                                                                       | ---                                  | ---    |
 | [![Nerdcast](https://github.com/felipebaltazar/PodcastManager/blob/master/Logos/Nerdcast.png)](https://github.com/felipebaltazar/PodcastManager/blob/master/PodcastManager/PodcastManagers/NerdCastManager.cs)                              | Yes                 | Episode Number, Title, Published Date, Insertions         | Reversed Web API                  | OK     |
+| [![NaoOuvo](https://github.com/felipebaltazar/PodcastManager/blob/master/Logos/NaoOuvo.png)](https://github.com/felipebaltazar/PodcastManager/blob/master/PodcastManager/PodcastManagers/NaoOuvoManager.cs)                              | Yes                 | Episode Number, Title, Published Date, Insertions         | Reversed Feed                  | OK     |
 
 
 ## Nuget Install
