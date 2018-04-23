@@ -5,6 +5,12 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIconUrl>https://assets-cdn.github.com/images/icons/emoji/unicode/1f3a7.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/felipebaltazar/PodcastManager</RepositoryUrl>
+    <Version>2.0.0</Version>
+    <Company>Tzar</Company>
+    <Authors>Felipe da silva baltazar</Authors>
+    <PackageProjectUrl>https://github.com/felipebaltazar/PodcastManager</PackageProjectUrl>
+    <PackageReleaseNotes>NaoOuvo podcast manager has been created</PackageReleaseNotes>
+    <PackageTags>Podcast Manager, Podcast, OpenSource, Nuget, NerdCast, NaoOuvo</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
