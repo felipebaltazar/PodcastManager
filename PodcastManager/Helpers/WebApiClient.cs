@@ -71,6 +71,36 @@ namespace PodcastManager.Helpers
             }
         }
 
+        public async Task<string> GetResponseStringAsync(string requestUri)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
+            {
+                AddHeaders(request);
+                request.Headers.Range = new RangeHeaderValue(0, null);
+
+                try
+                {
+                    using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                    {
+                        try
+                        {
+                            return await response.Content.ReadAsStringAsync();                            
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                            return null;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    return null;
+                }
+            }
+        }
+
         public Task<HttpResponseMessage> PatchAsync(string requestUri, string json)
         {
             return SendJsonAsync(requestUri, json, new HttpMethod("PATCH"));

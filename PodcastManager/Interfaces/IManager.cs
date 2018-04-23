@@ -13,7 +13,7 @@ namespace PodcastManager.Interfaces
         Task<List<IPodcastEpisode>> GetPodcastListAsync();
 
         Task<bool> DownloadPodcastAsync(
-            IPodcastEpisode episodio, string directoryOut, AsyncCompletedEventHandler completedDownloadEvent = null,
+            IPodcastEpisode episode, string directoryOut, AsyncCompletedEventHandler completedDownloadEvent = null,
             DownloadProgressChangedEventHandler downloadProgressChangedEvent = null, bool downloadInsertions = false);
     }
 }
