@@ -118,7 +118,7 @@ namespace PodcastManager.PodcastManagers
 
             using (var client = new WebClient())
             {
-                client.DownloadFileAsync(new Uri(naoOuvoEpisode.Image.Href), $"{naoOuvoDirectory}Cover.jpg");
+                client.DownloadFileAsync(new Uri(naoOuvoEpisode.ImageObject.Href), $"{naoOuvoDirectory}Cover.jpg");
             }
         }
     }
