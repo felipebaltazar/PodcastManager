@@ -6,6 +6,8 @@ namespace PodcastManager.Models.NaoOuvo
     [XmlRoot("item")]
     public class Episode : IPodcastEpisode
     {
+        private Image _image;
+
         [XmlElement("title")]
         public string Title { get; set; }
 
@@ -18,8 +20,7 @@ namespace PodcastManager.Models.NaoOuvo
         [XmlElement("itunessummary")]
         public string Description { get; set; }
 
-        [XmlElement("itunesimage")]
-        public Image Image { get; set; }
+        public string Image { get; set; }
 
         [XmlElement("enclosure")]
         public UrlContent Enclosure { get; set; }
@@ -44,6 +45,17 @@ namespace PodcastManager.Models.NaoOuvo
 
         [XmlElement("itunesexplicit")]
         public string Explicit { get; set; }
+
+        [XmlElement("itunesimage")]
+        public Image ImageObject
+        {
+            get => _image;
+            set
+            {
+                _image = new Image {Href = value.Href};
+                Image = value.Href;
+            }
+        }
 
     }
     public class Image
