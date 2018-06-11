@@ -5,11 +5,15 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdCastConsoleSample", "NerdCastConsoleSample\NerdCastConsoleSample.csproj", "{DE797BB0-5931-4D3A-B4B4-B35AF0722019}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PodcastManager", "PodcastManager\PodcastManager.csproj", "{6F206043-5C62-4797-9047-030EAC112641}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PodcastManager", "PodcastManager\PodcastManager.csproj", "{6F206043-5C62-4797-9047-030EAC112641}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9397FB8C-0798-4760-91FB-54FD0119B2AD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{989A8BE7-7701-4A09-84D0-4DC66A2DC87F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5E485D34-BC3F-4E36-9547-5AEB951A4190}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagersApi.Tests", "ManagersApi.Tests\ManagersApi.Tests.csproj", "{A238DFED-F922-4405-892A-D70B75AB0BA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,10 @@ Global
 		{6F206043-5C62-4797-9047-030EAC112641}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F206043-5C62-4797-9047-030EAC112641}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F206043-5C62-4797-9047-030EAC112641}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A238DFED-F922-4405-892A-D70B75AB0BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A238DFED-F922-4405-892A-D70B75AB0BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A238DFED-F922-4405-892A-D70B75AB0BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A238DFED-F922-4405-892A-D70B75AB0BA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DE797BB0-5931-4D3A-B4B4-B35AF0722019} = {989A8BE7-7701-4A09-84D0-4DC66A2DC87F}
 		{6F206043-5C62-4797-9047-030EAC112641} = {9397FB8C-0798-4760-91FB-54FD0119B2AD}
+		{A238DFED-F922-4405-892A-D70B75AB0BA0} = {5E485D34-BC3F-4E36-9547-5AEB951A4190}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1C35659E-1B42-47B4-8781-E6E34A2EFCD3}
