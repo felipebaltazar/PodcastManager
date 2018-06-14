@@ -10,6 +10,8 @@ script:
   - cd PodcastManager
   - dotnet restore
   - dotnet build -c Release
+  - cd ..
   - cd ManagersApi.Tests
   - dotnet restore
   - dotnet build -c Release
+  - cd ..
