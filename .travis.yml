@@ -13,5 +13,5 @@ script:
   - cd ..
   - cd ManagersApi.Tests
   - dotnet restore
-  - dotnet build -c Release
+  - xbuild /p:Configuration=Release ManagersApi.Tests.csproj /p:TargetFrameworkVersion="v4.6.1"
   - cd ..
