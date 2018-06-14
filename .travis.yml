@@ -1,11 +1,13 @@
+sudo: required
 language: csharp
 dotnet: 2.0.0
 solution: PodcastManager.sln
-solution: solution-name.sln
 install:
   - dotnet restore
   - nuget restore PodcastManager.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - msbuild /p:Configuration=Release PodcastManager.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./ManagersApi.Tests/bin/Release/ManagersApi.Tests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./ManagersApi.Tests/bin/Release/ManagersApi.Tests.dll --exclude:TravisExclude --labels
+ after_success:
+  - coveralls
