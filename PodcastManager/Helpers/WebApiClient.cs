@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PodcastManager.Interfaces;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -10,9 +11,11 @@ namespace PodcastManager.Helpers
     internal class WebApiClient
     {
         private readonly HttpClient _httpClient;
+        private readonly IFileHelper _fileHelper;
 
-        public WebApiClient(HttpClient httpClient)
+        public WebApiClient(HttpClient httpClient, IFileHelper fileHelper)
         {
+            _fileHelper = fileHelper;
             _httpClient = httpClient;
         }
 
@@ -29,10 +32,8 @@ namespace PodcastManager.Helpers
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() =>
             _httpClient.Dispose();
-        }
 
         public async Task GetAsync(string requestUri, string fileToWriteTo)
         {
@@ -49,8 +50,8 @@ namespace PodcastManager.Helpers
                         {
                             using (var stream = await response.Content.ReadAsStreamAsync())
                             {
-                                if (!File.Exists(fileToWriteTo))
-                                    using (var streamToWriteTo = File.Open(fileToWriteTo, FileMode.Create))
+                                if (!_fileHelper.FileExists(fileToWriteTo))
+                                    using (var streamToWriteTo = _fileHelper.FileOpen(fileToWriteTo, FileMode.Create))
                                     {
                                         await stream.CopyToAsync(streamToWriteTo);
                                     }

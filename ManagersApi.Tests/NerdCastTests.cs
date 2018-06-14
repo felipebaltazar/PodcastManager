@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using ManagersApi.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PodcastManager;
 using PodcastManager.Enums;
@@ -12,11 +14,11 @@ namespace ManagersApi.Tests
     public class NerdCastTests
     {
         [TestMethod]
-        public void ApiTest()
+        public async Task ApiTest()
         {
             var podcastManager = new Manager();
             var currentManager = podcastManager.GetManager(PodcastType.NerdCast);
-            var episodeCollection = currentManager.GetPodcastListAsync().Result;
+            var episodeCollection = await currentManager.GetPodcastListAsync();
             var firstItem = episodeCollection.First();
 
             (firstItem is Episode).Should().Be(true);
@@ -28,13 +30,28 @@ namespace ManagersApi.Tests
             apiIsWorking.Should().Be(true);
         }
 
-        public void DownloadFail()
+        [TestMethod]
+        public async Task DownloadFail()
         {
             var podcastManager = new Manager();
             var currentManager = podcastManager.GetManager(PodcastType.NerdCast);
-            var success = currentManager.DownloadPodcastAsync(null,null);
+            var success = await currentManager.DownloadPodcastAsync(null,null);
 
             success.Should().Be(false);
+        }
+
+        [TestMethod]
+        public async Task DownloadSuccess()
+        {
+            var podcastManager = new Manager(new FakeFileHelper());
+            var currentManager = podcastManager.GetManager(PodcastType.NerdCast);
+            var episodeCollection = await currentManager.GetPodcastListAsync();
+            
+            var lastNerdcast = episodeCollection.First() as Episode;
+            var success = await currentManager
+                .DownloadPodcastAsync(lastNerdcast, "FakeDirectory");
+
+            success.Should().Be(true);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using ManagersApi.Tests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PodcastManager;
 using PodcastManager.Enums;
@@ -12,17 +14,41 @@ namespace ManagersApi.Tests
     public class NaoOuvoTests
     {
         [TestMethod]
-        public void ApiTest()
+        public async Task ApiTest()
         {
             var podcastManager = new Manager();
             var currentManager = podcastManager.GetManager(PodcastType.NaoOuvo);
-            var episodeCollection = currentManager.GetPodcastListAsync().Result;
+            var episodeCollection = await currentManager.GetPodcastListAsync();
 
             var lastNaoOuvo = episodeCollection.First() as Episode;
             var timeDifference = DateTime.Now.Date - DateTime.Parse(lastNaoOuvo.PubDate).Date;
             var apiIsWorking = timeDifference < TimeSpan.FromDays(7);
 
             apiIsWorking.Should().Be(true);
+        }
+
+        [TestMethod]
+        public async Task DownloadFail()
+        {
+            var podcastManager = new Manager();
+            var currentManager = podcastManager.GetManager(PodcastType.NaoOuvo);
+            var success = await currentManager.DownloadPodcastAsync(null, null);
+
+            success.Should().Be(false);
+        }
+
+        [TestMethod]
+        public async Task DownloadSuccess()
+        {
+            var podcastManager = new Manager(new FakeFileHelper());
+            var currentManager = podcastManager.GetManager(PodcastType.NaoOuvo);
+            var episodeCollection = await currentManager.GetPodcastListAsync();
+            
+            var lastNaoOuvo = episodeCollection.First() as Episode;
+            var success = await currentManager
+                .DownloadPodcastAsync(lastNaoOuvo, "FakeDirectory");
+            
+            success.Should().Be(true);
         }
     }
 }

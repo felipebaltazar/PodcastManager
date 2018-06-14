@@ -20,13 +20,15 @@ namespace PodcastManager.PodcastManagers
         private const string NERDCAST_API = "https://api.jovemnerd.com.br/wp-json/jovemnerd/v1/nerdcasts";
         private const string NERDCAST_DOWNLOAD_URL = "https://nerdcast-cdn.jovemnerd.com.br/";
         private List<string> currentFilesDownloading = new List<string>();
-        private WebClient WebClient;
+        private readonly IFileHelper _fileHelper;
+        private readonly WebClient _webClient;
 
         public PodcastType Type => PodcastType.NerdCast;
 
-        public NerdCastManager()
+        public NerdCastManager(IFileHelper fileHelper)
         {
-            WebClient = new WebClient();
+            _fileHelper = fileHelper;
+            _webClient = new WebClient();
         }
         
         public async Task<List<IPodcastEpisode>> GetPodcastListAsync()
@@ -34,10 +36,10 @@ namespace PodcastManager.PodcastManagers
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 var episodeList = await Json.DeserializeObjectAsync<List<Episode>>(
-                    WebClient.DownloadString(NERDCAST_API));
+                    _webClient.DownloadString(NERDCAST_API));
 
                 var episodeListAlternative = await Json.DeserializeObjectAsync<List<Episode>>(
-                    WebClient.DownloadString(string.Concat(NERDCAST_API, "/")));
+                    _webClient.DownloadString(string.Concat(NERDCAST_API, "/")));
 
                 return episodeList[0]?.PublishedAt > episodeListAlternative[0]?.PublishedAt
                     ? episodeList.Select(e=> e as IPodcastEpisode).ToList()
@@ -56,10 +58,10 @@ namespace PodcastManager.PodcastManagers
                 if (string.IsNullOrEmpty(directoryOut))
                     return false;
 
-                if (!Directory.Exists(directoryOut))
-                    Directory.CreateDirectory(directoryOut);
+                if (!_fileHelper.DirectoryExists(directoryOut))
+                    _fileHelper.CreateDirectory(directoryOut);
 
-                if (episode is Episode nerdCastEpisode && Directory.Exists(directoryOut))
+                if (episode is Episode nerdCastEpisode && _fileHelper.DirectoryExists(directoryOut))
                 {
                     var archiveName =
                         nerdCastEpisode.AudioHigh?.Substring(nerdCastEpisode.AudioHigh.LastIndexOf("/") + 1) ??
@@ -75,7 +77,7 @@ namespace PodcastManager.PodcastManagers
                         Timeout = (new TimeSpan(5, 0, 0))
                     };
 
-                    var client = new WebApiClient(httpclient);
+                    var client = new WebApiClient(httpclient, _fileHelper);
 
                     currentFilesDownloading.Add(archiveName);
                     directoryOut = directoryOut.EndsWith("\\") ? directoryOut : directoryOut + "\\";
@@ -110,16 +112,16 @@ namespace PodcastManager.PodcastManagers
                 Path.GetFileNameWithoutExtension(archiveName),
                 "\\");
 
-            if (!Directory.Exists(nerdCastDirectory))
-                Directory.CreateDirectory(nerdCastDirectory);
+            if (!_fileHelper.DirectoryExists(nerdCastDirectory))
+                _fileHelper.CreateDirectory(nerdCastDirectory);
 
-            WebClient.DownloadFileAsync(new Uri(episodio.Image), $"{nerdCastDirectory}Cover.jpg");
+            await _webClient.DownloadFileTaskAsync(new Uri(episodio.Image), $"{nerdCastDirectory}Cover.jpg");
 
             foreach (var image in episodio.Insertions)
             {
                 if (image?.Image?.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ?? false)
                 {
-                    WebClient.DownloadFileAsync(
+                    await _webClient.DownloadFileTaskAsync(
                         new Uri(image.Image),
                         $"{nerdCastDirectory}{image.Image.Substring(image.Image.LastIndexOf("/"))}");
                 }
@@ -135,8 +137,8 @@ namespace PodcastManager.PodcastManagers
             var jsonEpisodeArts = await Json.SerializeObjectAsync(
                 episodio.Insertions.Where(a => a.Image.StartsWith("https", StringComparison.OrdinalIgnoreCase)));
 
-            File.WriteAllText($"{fullArchiveDirectory}{Path.GetFileNameWithoutExtension(archiveName)}.info", info);
-            File.WriteAllText($"{fullArchiveDirectory}{Path.GetFileNameWithoutExtension(archiveName)}.json", jsonEpisodeArts);
+            _fileHelper.WriteAllText($"{fullArchiveDirectory}{Path.GetFileNameWithoutExtension(archiveName)}.info", info);
+            _fileHelper.WriteAllText($"{fullArchiveDirectory}{Path.GetFileNameWithoutExtension(archiveName)}.json", jsonEpisodeArts);
         }
     }
 }

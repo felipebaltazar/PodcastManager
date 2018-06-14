@@ -22,16 +22,19 @@ namespace PodcastManager.PodcastManagers
         public PodcastType Type => PodcastType.NaoOuvo;
         private const string NAOOUVO_FEED = "http://feeds.feedburner.com/naoouvo/";
         private List<string> currentFilesDownloading = new List<string>();
+        private readonly IFileHelper _fileHelper;
         private WebApiClient WebClient;
 
-        public NaoOuvoManager()
+        public NaoOuvoManager(IFileHelper fileHelper)
         {
+            _fileHelper = fileHelper;
+
             var handler = new HttpClientHandler()
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
-            WebClient = new WebApiClient(new HttpClient(handler));
+            WebClient = new WebApiClient(new HttpClient(handler), _fileHelper);
         }
 
         public async Task<List<IPodcastEpisode>> GetPodcastListAsync()
@@ -40,7 +43,9 @@ namespace PodcastManager.PodcastManagers
             {
                 var xmlString = await WebClient.GetResponseStringAsync(NAOOUVO_FEED);
                 var feedXmlDocument = XDocument.Parse(xmlString.Replace("itunes:","itunes").Replace("media:", "media"));
-                var episodeList = feedXmlDocument.Descendants().Where(e=>e.Name.LocalName.Equals("item", StringComparison.OrdinalIgnoreCase));
+
+                var episodeList = feedXmlDocument.Descendants()
+                    .Where(e=>e.Name.LocalName.Equals("item", StringComparison.OrdinalIgnoreCase));
                 
                 return episodeList.Select(e =>
                 {
@@ -55,7 +60,7 @@ namespace PodcastManager.PodcastManagers
         }
 
         public async Task<bool> DownloadPodcastAsync(
-            IPodcastEpisode episode,   string directoryOut,  AsyncCompletedEventHandler completedDownloadEvent = null, 
+            IPodcastEpisode episode, string directoryOut, AsyncCompletedEventHandler completedDownloadEvent = null, 
             DownloadProgressChangedEventHandler downloadProgressChangedEvent = null, bool downloadInsertions = false)
         {
             try
@@ -63,10 +68,10 @@ namespace PodcastManager.PodcastManagers
                 if (string.IsNullOrEmpty(directoryOut))
                     return false;
 
-                if (!Directory.Exists(directoryOut))
-                    Directory.CreateDirectory(directoryOut);
+                if (!_fileHelper.DirectoryExists(directoryOut))
+                    _fileHelper.CreateDirectory(directoryOut);
 
-                if (episode is Episode naoOuvoEpisode && Directory.Exists(directoryOut))
+                if (episode is Episode naoOuvoEpisode && _fileHelper.DirectoryExists(directoryOut))
                 {
                     var archiveName =  naoOuvoEpisode.Url.Substring(naoOuvoEpisode.Url.LastIndexOf("/") + 1);
 
@@ -78,7 +83,7 @@ namespace PodcastManager.PodcastManagers
                         Timeout = (new TimeSpan(5, 0, 0))
                     };
 
-                    var client = new WebApiClient(httpclient);
+                    var client = new WebApiClient(httpclient, _fileHelper);
 
                     currentFilesDownloading.Add(archiveName);
                     directoryOut = directoryOut.EndsWith("\\") ? directoryOut : directoryOut + "\\";
@@ -113,12 +118,12 @@ namespace PodcastManager.PodcastManagers
                 Path.GetFileNameWithoutExtension(archiveName),
                 "\\");
 
-            if (!Directory.Exists(naoOuvoDirectory))
-                Directory.CreateDirectory(naoOuvoDirectory);
+            if (!_fileHelper.DirectoryExists(naoOuvoDirectory))
+                _fileHelper.CreateDirectory(naoOuvoDirectory);
 
             using (var client = new WebClient())
             {
-                client.DownloadFileAsync(new Uri(naoOuvoEpisode.ImageObject.Href), $"{naoOuvoDirectory}Cover.jpg");
+                await client.DownloadFileTaskAsync(new Uri(naoOuvoEpisode.ImageObject.Href), $"{naoOuvoDirectory}Cover.jpg");
             }
         }
     }
