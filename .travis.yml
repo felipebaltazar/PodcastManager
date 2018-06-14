@@ -1,17 +1,11 @@
 language: csharp
-mono: none
 dotnet: 2.0.0
 solution: PodcastManager.sln
-before_install:
-  - sudo apt-get install nunit-console
-after_script:
-  - nunit-console ManagersApi.Tests/bin/Release/ManagersApi.Tests.dll
+solution: solution-name.sln
+install:
+  - dotnet restore
+  - nuget restore PodcastManager.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - cd PodcastManager
-  - dotnet restore
-  - dotnet build -c Release
-  - cd ..
-  - cd ManagersApi.Tests
-  - dotnet restore
-  - xbuild /p:Configuration=Release ManagersApi.Tests.csproj /p:TargetFrameworkVersion="v4.6.1"
-  - cd ..
+  - xbuild /p:Configuration=Release PodcastManager.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./ManagersApi.Tests/bin/Release/ManagersApi.Tests.dll
