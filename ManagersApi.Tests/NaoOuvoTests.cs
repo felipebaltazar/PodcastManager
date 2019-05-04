@@ -22,7 +22,7 @@ namespace ManagersApi.Tests
 
             var lastNaoOuvo = episodeCollection.First() as Episode;
             var timeDifference = DateTime.Now.Date - DateTime.Parse(lastNaoOuvo.PubDate).Date;
-            var apiIsWorking = timeDifference < TimeSpan.FromDays(7);
+            var apiIsWorking = timeDifference < TimeSpan.FromDays(30);
 
             apiIsWorking.Should().Be(true);
         }

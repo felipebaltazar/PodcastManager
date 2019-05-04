@@ -1,6 +1,7 @@
 ﻿using PodcastManager.Enums;
 using PodcastManager.Helpers;
 using PodcastManager.Interfaces;
+using PodcastManager.Interfaces.Providers;
 using PodcastManager.Models.NerdCast;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,11 @@ namespace PodcastManager.PodcastManagers
 {
     internal class NerdCastManager : IManager
     {
-        private const string NERDCAST_API = "https://api.jovemnerd.com.br/wp-json/jovemnerd/v1/nerdcasts";
+        private const string NERDCAST_API = "https://api.jovemnerd.com.br";
         private const string NERDCAST_DOWNLOAD_URL = "https://nerdcast-cdn.jovemnerd.com.br/";
-        private List<string> currentFilesDownloading = new List<string>();
+        private readonly List<string> _currentFilesDownloading = new List<string>();
         private readonly IFileHelper _fileHelper;
+        private readonly INerdcastProvider _nerdCastProvider;
         private readonly WebClient _webClient;
 
         public PodcastType Type => PodcastType.NerdCast;
@@ -29,17 +31,15 @@ namespace PodcastManager.PodcastManagers
         {
             _fileHelper = fileHelper;
             _webClient = new WebClient();
+            _nerdCastProvider = Refit.RestService.For<INerdcastProvider>(NERDCAST_API);
         }
         
         public async Task<List<IPodcastEpisode>> GetPodcastListAsync()
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                var episodeList = await Json.DeserializeObjectAsync<List<Episode>>(
-                    _webClient.DownloadString(NERDCAST_API));
-
-                var episodeListAlternative = await Json.DeserializeObjectAsync<List<Episode>>(
-                    _webClient.DownloadString(string.Concat(NERDCAST_API, "/")));
+                var episodeList = await _nerdCastProvider.GetNerdCasts();
+                var episodeListAlternative = await _nerdCastProvider.GetNerdCastsAlternative();
 
                 return episodeList[0]?.PublishedAt > episodeListAlternative[0]?.PublishedAt
                     ? episodeList.Select(e=> e as IPodcastEpisode).ToList()
@@ -68,7 +68,7 @@ namespace PodcastManager.PodcastManagers
                         nerdCastEpisode.AudioMedium?.Substring(nerdCastEpisode.AudioMedium.LastIndexOf("/") + 1) ??
                         nerdCastEpisode.AudioLow.Substring(nerdCastEpisode.AudioLow.LastIndexOf("/") + 1);
 
-                    if (currentFilesDownloading.Any(name => name.Equals(archiveName, StringComparison.CurrentCultureIgnoreCase)))
+                    if (_currentFilesDownloading.Any(name => name.Equals(archiveName, StringComparison.CurrentCultureIgnoreCase)))
                         return false;
 
                     var httpclient = new HttpClient()
@@ -79,7 +79,7 @@ namespace PodcastManager.PodcastManagers
 
                     var client = new WebApiClient(httpclient, _fileHelper);
 
-                    currentFilesDownloading.Add(archiveName);
+                    _currentFilesDownloading.Add(archiveName);
                     directoryOut = directoryOut.EndsWith("\\") ? directoryOut : directoryOut + "\\";
 
                     if (downloadInsertions)
@@ -89,7 +89,7 @@ namespace PodcastManager.PodcastManagers
 
                     await client.GetAsync(archiveName, filePath);
 
-                    currentFilesDownloading.Remove(archiveName);
+                    _currentFilesDownloading.Remove(archiveName);
                     completedDownloadEvent?.Invoke(null, null);
 
                     return true;
